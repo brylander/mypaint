@@ -67,3 +67,16 @@ jobs:
                 sudo python3 setup.py managed_install
                 sudo python3 setup.py managed_uninstall
                 bash appimage/trigger_build.sh
+                
+            - name: "Run tests with coverage for Sonar"
+              run: |
+                # run nose with coverage, focusing on lib/ tests
+                coverage run -m nose lib
+                coverage xml -o coverage.xml
+
+            - name: "SonarCloud Scan"
+              uses: SonarSource/sonarcloud-github-action@v2
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            
